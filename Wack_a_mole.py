@@ -3,8 +3,6 @@ from playsound import playsound
 import tkinter as tk
 from tkinter import ttk, BOTH, DISABLED, NORMAL
 from threading import Timer
-from random import randint
-
 
 class wack_a_mole:
     def __init__(self, root):
@@ -28,25 +26,32 @@ class wack_a_mole:
         t.start()
 
     def mole_appear(self):
-        buttons = [self.button1, self.button2, self.button3, self. button4]
-        for button in buttons:
-            if button.cget('bg') == 'red':
-                buttons.pop(buttons.index(button))
-            button.config(bg='gray')
-            button.config(state=NORMAL)
-        choose_button = random.choice(buttons)
-        choose_button.config(bg='red')
-        # print(choose_button.cget('bg'))
-        self.mole_time()
+        buttons = [self.button1, self.button2, self.button3, self.button4]
+        if self.count > 0:
+            for button in buttons:
+                if button.cget('bg') == 'red':
+                    buttons.pop(buttons.index(button))
+                button.config(bg='gray')
+                button.config(state=NORMAL)
+            choose_button = random.choice(buttons)
+            choose_button.config(bg='red')
+            # print(choose_button.cget('bg'))
+            self.mole_time()
+        else:
+            for button in buttons:
+                button.config(state=DISABLED)
+
 
     def get_mole(self, button):
-        if button.cget('bg') == 'red':
-            self.score += 1
-            playsound('pop.mp3', block=False)
-            button.config(state=DISABLED)
-        else:
-            self.score -=1
-        self.score_disp.config(text=self.score)
+        if self.count > 0:
+            if button.cget('bg') == 'red':
+                self.score += 1
+                playsound('pop.mp3', block=False)
+                button.config(state=DISABLED)
+            else:
+                self.score -=1
+            self.score_disp.config(text=self.score)
+
 
     def mole_time(self):
         random_time = random.uniform(0.4, 0.8)
@@ -85,7 +90,7 @@ class wack_a_mole:
         data_frame = tk.LabelFrame(data_frame_bg, height=100, width=300, borderwidth=5, bg='cyan')
         data_frame.pack(padx=5, pady=5)
 
-        self.count = 10
+        self.count = 5
         timer = ttk.Label(data_frame, text=self.count, font=("Courier", 20, "italic"))
         self.timer = timer
         timer.grid(row=0, column=1)
