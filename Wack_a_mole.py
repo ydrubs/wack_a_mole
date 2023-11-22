@@ -41,7 +41,6 @@ class wack_a_mole:
             for button in buttons:
                 button.config(state=DISABLED)
 
-
     def get_mole(self, button):
         if self.count > 0:
             if button.cget('bg') == 'red':
