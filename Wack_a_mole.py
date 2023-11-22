@@ -4,86 +4,15 @@ import tkinter as tk
 from tkinter import ttk, BOTH, DISABLED, NORMAL
 from threading import Timer
 
-class window_manager(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-        # Adding a title to the window
-        self.wm_title("Test Application")
-
-        # creating a frame and assigning it to container
-        container = tk.Frame(self)
-        # specifying the region where the frame is packed in root
-        container.pack(side="top", fill="both", expand=True)
-
-        # configuring the location of the container using grid
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-
-        # We will now create a dictionary of frames
-        self.frames = {}
-        # we'll create the frames themselves later but let's add the components to the dictionary.
-        for F in (MainPage, wack_a_mole):
-            frame = F(container, self)
-
-            # the windows class acts as the root window for the frames.
-            self.frames[F] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
-
-        # Using a method to switch frames
-        self.show_frame(wack_a_mole)
-
-    def show_frame(self, cont):
-        frame = self.frames[cont]
-        # raises the current frame to the top
-        frame.tkraise()
-        self.resizable(1, 1)
-
-class MainPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        # label = tk.Label(self, text="Completion Screen, we did it!")
-        # label.pack(padx=10, pady=10)
-        switch_window_button = ttk.Button(
-            self, text="Return to menu", command=lambda: controller.show_frame(wack_a_mole)
-        )
-        switch_window_button.pack()
-
-
-
-class wack_a_mole(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        # self.controller = controller
-        # self.root =
-        # self.root.title("Whack a Mole")
-        self.frame = tk.Frame(self)
-        self.frame.pack()
-        self.count = 2
-        self.count = wack_a_mole.reset()
+class wack_a_mole:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Whack a Mole")
         self.score = 0
         self.create_buttons()
         self.create_data_frame()
         self.game_time()
         self.mole_time()
-        # self.switch()
-        self.controller = controller
-
-    @classmethod
-    def reset(cls):
-        cls.count = 10
-        return cls.count
-
-    def set_time(self, count):
-        self.count = count
-        return count
-
-    def switch(self):
-        switch_window_button = ttk.Button(
-            self, text="Return to menu", command=lambda: self.controller.show_frame(MainPage)
-        )
-        switch_window_button.pack(side="bottom", fill=tk.X)
-
-
 
     def one_second(self):
         # print("One second has passed")
@@ -91,9 +20,6 @@ class wack_a_mole(tk.Frame):
             self.count -=1
             self.timer.config(text=self.count)
             self.game_time()
-        else:
-            self.controller.show_frame(MainPage)
-
 
     def game_time(self):
         t = Timer(1 * 1, self.one_second)
@@ -135,7 +61,7 @@ class wack_a_mole(tk.Frame):
 
 
     def create_buttons(self):
-        button_frame = tk.LabelFrame(self.frame, height=300, width=300, bg='yellow', borderwidth=5)
+        button_frame = tk.LabelFrame(self.root, height=300, width=300, bg='yellow', borderwidth=5)
         button_frame.pack(fill = BOTH, expand = True, padx=5, pady=5)
 
         # photo = tk.PhotoImage(file="mole.png")
@@ -158,12 +84,13 @@ class wack_a_mole(tk.Frame):
         button4.grid(row=1, column=1, padx=20, pady=20, ipady=40, ipadx=70)
 
     def create_data_frame(self):
-        data_frame_bg = tk.LabelFrame(self.frame, height=100, width=300, borderwidth=5, bg='cyan')
+        data_frame_bg = tk.LabelFrame(self.root, height=100, width=300, borderwidth=5, bg='cyan')
         data_frame_bg.pack(expand=True, fill= BOTH, padx=5, pady=5)
 
         data_frame = tk.LabelFrame(data_frame_bg, height=100, width=300, borderwidth=5, bg='cyan')
         data_frame.pack(padx=5, pady=5)
 
+        self.count = 5
         timer = ttk.Label(data_frame, text=self.count, font=("Courier", 20, "italic"))
         self.timer = timer
         timer.grid(row=0, column=1)
@@ -180,11 +107,7 @@ class wack_a_mole(tk.Frame):
         score_label.grid(row=0,column=3)
         self.score_disp.grid(row=0, column=4)
 
-        tk.Button(data_frame, command = lambda : self.set_time(10)).grid(row=0, column=5) #START HERE
-
 if __name__ == '__main__':
-    # root = tk.Tk()
-    # window_manager(root)
-    # root.mainloop()
-    root = window_manager()
+    root = tk.Tk()
+    wack_a_mole(root)
     root.mainloop()
